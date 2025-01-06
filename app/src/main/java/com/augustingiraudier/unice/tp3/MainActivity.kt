@@ -1,5 +1,6 @@
 package com.augustingiraudier.unice.tp3
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,14 +20,12 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-
-        val rollButton: Button = findViewById(R.id.button)
-        rollButton.setOnClickListener { rollDices() }
-
         val inputNumber: EditText = findViewById(R.id.editTextNumber)
         inputNumber.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                rollButton.isEnabled = inputIsValid(s);
+                if(inputIsValid(s)){
+                    rollDices()
+                }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -55,8 +54,13 @@ class MainActivity : AppCompatActivity() {
         println(inputNumber.text.length)
         println((diceRoll + diceRoll2).toString().length)
 
+        val isWon : Boolean = (diceRoll + diceRoll2).toString().equals(inputNumber.text.toString())
+        messageTextView.text = if (isWon) getString(R.string.winMessage) else getString(R.string.looseMessage)
+        if(isWon){
+            shakeTextView(resultTextView)
+            shakeTextView(resultTextView2)
+        }
 
-        messageTextView.text = if ((diceRoll + diceRoll2).toString().equals(inputNumber.text.toString())) getString(R.string.winMessage) else getString(R.string.looseMessage)
     }
 
     private fun inputIsValid(s :Editable?): Boolean {
@@ -82,6 +86,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         return true
+    }
+
+    fun shakeTextView(textView: TextView) {
+        // Animation de translation horizontale pour simuler un tremblement
+        val animator = ObjectAnimator.ofFloat(textView, "translationX", 0f, 10f, -10f, 10f, -10f, 5f, -5f, 0f)
+        animator.duration = 500 // Durée en ms
+        animator.start()
     }
 }
 
