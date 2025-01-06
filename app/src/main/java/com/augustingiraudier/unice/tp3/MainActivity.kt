@@ -1,7 +1,10 @@
 package com.augustingiraudier.unice.tp3
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +22,15 @@ class MainActivity : AppCompatActivity() {
 
         val rollButton: Button = findViewById(R.id.button)
         rollButton.setOnClickListener { rollDices() }
+
+        val inputNumber: EditText = findViewById(R.id.editTextNumber)
+        inputNumber.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                rollButton.isEnabled = inputIsValid(s);
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
     /**
@@ -37,8 +49,39 @@ class MainActivity : AppCompatActivity() {
         resultTextView2.text = diceRoll2.toString()
 
         // update result message
+        val inputNumber: EditText = findViewById(R.id.editTextNumber)
         val messageTextView: TextView = findViewById(R.id.message)
-        messageTextView.text = if (diceRoll == diceRoll2) getString(R.string.winMessage) else getString(R.string.looseMessage)
+
+        println(inputNumber.text.length)
+        println((diceRoll + diceRoll2).toString().length)
+
+
+        messageTextView.text = if ((diceRoll + diceRoll2).toString().equals(inputNumber.text.toString())) getString(R.string.winMessage) else getString(R.string.looseMessage)
+    }
+
+    private fun inputIsValid(s :Editable?): Boolean {
+        val inputText = s.toString()
+
+        // Vérification que le texte n'est pas vide
+        if (inputText.isEmpty()) {
+            println("Le champ est vide")
+            return false
+        }
+
+        // Vérification que le texte est un entier
+        val number = inputText.toIntOrNull()
+        if (number == null) {
+            println("Le texte n'est pas un entier valide")
+            return false
+        }
+
+        // Vérification que le nombre est entre 0 et 12 inclus
+        if (number !in 2..12) {
+            println("Le nombre $number est invalide")
+            return false
+        }
+
+        return true
     }
 }
 
