@@ -18,20 +18,27 @@ class MainActivity : AppCompatActivity() {
 
 
         val rollButton: Button = findViewById(R.id.button)
-        rollButton.setOnClickListener { rollDice() }
+        rollButton.setOnClickListener { rollDices() }
     }
 
     /**
      * Roll the dice and update the screen with the result.
      */
-    private fun rollDice() {
-        // Create new Dice object with 6 sides and roll it
+    private fun rollDices() {
+        // Create new Dice object with 6 sides and roll it twice
         val dice = Dice(6)
         val diceRoll = dice.roll()
+        val diceRoll2 = dice.roll()
 
         // Update the screen with the dice roll
-        val resultTextView: TextView = findViewById(R.id.textView)
+        val resultTextView: TextView = findViewById(R.id.textView1)
+        val resultTextView2: TextView = findViewById(R.id.textView2)
         resultTextView.text = diceRoll.toString()
+        resultTextView2.text = diceRoll2.toString()
+
+        // update result message
+        val messageTextView: TextView = findViewById(R.id.message)
+        messageTextView.text = if (diceRoll == diceRoll2) getString(R.string.winMessage) else getString(R.string.looseMessage)
     }
 }
 
